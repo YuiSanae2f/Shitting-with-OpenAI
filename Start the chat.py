@@ -3,28 +3,28 @@ import os
 #from this import d
 import openai
 
-#openai.api_key´Â openAI »çÀÌÆ®¿¡¼­ °¡Á®´Ù ¾²½Ã¸é µË´Ï´Ù. Á¦ °Å ±×´ë·Î ¾²½Ã¸é °í¼Ò ³¯¸± °Å¿¡¿ä.
-openai.api_key = "¿©±â¿¡ string Çü½ÄÀ¸·Î ³Ö¾î ¹ö¸®¸é µË´Ï´Ù."
+#openai.api_keyëŠ” openAI ì‚¬ì´íŠ¸ì—ì„œ ê°€ì ¸ë‹¤ ì“°ì‹œë©´ ë©ë‹ˆë‹¤. ì œ ê±° ê·¸ëŒ€ë¡œ ì“°ì‹œë©´ ê³ ì†Œ ë‚ ë¦´ ê±°ì—ìš”.
+openai.api_key = "ì—¬ê¸°ì— string í˜•ì‹ìœ¼ë¡œ ë„£ì–´ ë²„ë¦¬ë©´ ë©ë‹ˆë‹¤."
 
-#¾ê´Â ´ëÈ­Ã¼¶ó´Â °Å Çò°¥¸®Áö ¸»¶ó°í Áı¾î³Ö´Â °Å¿¡¿ä
+#ì–˜ëŠ” ëŒ€í™”ì²´ë¼ëŠ” ê±° í—·ê°ˆë¦¬ì§€ ë§ë¼ê³  ì§‘ì–´ë„£ëŠ” ê±°ì—ìš”
 start_sequence = "\\nAI:"
 restart_sequence = "\\nHuman: "
 
-#ÆÄÀÏ ÀÔ·ÂÀ¸·Î ÀÌ´Ï½Ã¿¡ÀÌÆÃÀ» °É °Å¿¡¿ä
+#íŒŒì¼ ì…ë ¥ìœ¼ë¡œ ì´ë‹ˆì‹œì—ì´íŒ…ì„ ê±¸ ê±°ì—ìš”
 f = open("test.txt", 'r')
 basic_rule = f.readline()
 dialogue = f.readline()
 f.close()
 
-#ÀÌ°Ç ¾î»öÇÏÁö ¸»¶ó°í ³Ö´Â °Å
+#ì´ê±´ ì–´ìƒ‰í•˜ì§€ ë§ë¼ê³  ë„£ëŠ” ê±°
 print("Human: ")
 
 while True:
-    #temp¿¡ Å°º¸µå ÀÔ·Â ¹Ş¾Æ¼­ ¶óÀÎ¿¡ Áı¾îÃÄ³ÖÀ» °ÅÀÓ
+    #tempì— í‚¤ë³´ë“œ ì…ë ¥ ë°›ì•„ì„œ ë¼ì¸ì— ì§‘ì–´ì³ë„£ì„ ê±°ì„
     temp = input()
     dialogue = dialogue + temp + start_sequence
 
-    #ÀÔ·Â¹ŞÀº °ªÀ» ¶óÀÎ¿¡ ²É¾Æ¹ö¸®±â
+    #ì…ë ¥ë°›ì€ ê°’ì„ ë¼ì¸ì— ê½ƒì•„ë²„ë¦¬ê¸°
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt = dialogue,
@@ -36,12 +36,12 @@ while True:
         stop=[" Human:", " AI:"]
     )
 
-    #¸®½ºÆù½º ÅØ½ºÆ®ÀÎ°¡ ¹º°¡ µé°í ¿À±â
+    #ë¦¬ìŠ¤í°ìŠ¤ í…ìŠ¤íŠ¸ì¸ê°€ ë­”ê°€ ë“¤ê³  ì˜¤ê¸°
     response_string = response['choices'][0]['text']
     print("\nAI:\n" + response_string + "\n\nHuman: ")
     dialogue = dialogue + response_string + restart_sequence
 
-    #´ëÈ­ÇÑ °É ÆÄÀÏ¿¡ ²É¾Æ ³Ö±â
+    #ëŒ€í™”í•œ ê±¸ íŒŒì¼ì— ê½ƒì•„ ë„£ê¸°
     f = open("test.txt", 'w')
     f.write(basic_rule)
     f.write(dialogue)
