@@ -1,0 +1,20 @@
+
+Human: 
+ping
+AI: 
+Pong!
+
+Human: 
+ping
+AI: 
+Pong! What can I do for you?
+
+Human: 
+또 다른 무언가
+AI: 
+What do you need help with?
+
+Human: 
+필요치 않은
+AI: 
+I'm sorry, I'm not sure how I can help with that. Is there anything else I can help you with?

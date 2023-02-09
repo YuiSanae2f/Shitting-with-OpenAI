@@ -6,26 +6,20 @@ import playsound #tts을 읽으려고 들고 옴
 import random
 
 #openai.api_key는 openAI 사이트에서 가져다 쓰시면 됩니다. 제 거 그대로 쓰시면 고소 날릴 거에요.
-openai.api_key = "여기에 api 넣는 거에요"
+openai.api_key = "여기다가 넣으시면 됩니다."
 
 #얘는 대화체라는 거 헷갈리지 말라고 집어넣는 거에요
-start_sequence = "\\nAI:"
-restart_sequence = "\\nHuman: "
+start_sequence = "\nAI: "
+restart_sequence = "\nHuman: "
 
-#파일 입력으로 이니시에이팅을 걸 거에요
-f = open("test.txt", 'r')
-basic_rule = f.readline()
+#규칙을 불러옵니다.
+f = open("Rule.txt", 'r')
+basic_rule = f.read()
+f.close()
 
-#서브룰과 그것을 전부 합칠 때 쓸 무언가
-Rule_Add = []
-RuleC = ""
-
-#서브룰을 불러옵니다. 줄 수는 ruleCount에서 들고 올 거에요
-ruleCount = f.readline()
-for i in range(0,int(ruleCount)):
-    Rule_Add.append(f.readline())
-    RuleC = RuleC + Rule_Add[i]
-dialogue = f.readline()
+#지금까지 저장되어 있던 대화를 불러 옵니다.
+f = open("Dialogue.txt", 'r')
+dialogue = f.read()
 f.close()
 
 #이건 어색하지 말라고 넣는 거
@@ -34,12 +28,12 @@ print("Human: ")
 while True:
     #temp에 키보드 입력 받아서 라인에 집어쳐넣을 거임
     temp = input()
-    dialogue = dialogue + temp + start_sequence
+    dialogue = dialogue + restart_sequence + "\n" + temp + start_sequence
 
     #입력받은 값을 라인에 꽃아버리기
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt = basic_rule + RuleC + dialogue,
+        prompt = basic_rule + dialogue,
         temperature=0.9,
         max_tokens=150,
         top_p=1,
@@ -50,11 +44,7 @@ while True:
 
     #리스폰스 텍스트인가 들고 와서 콘솔에 출력할 거에요
     response_string = response['choices'][0]['text']
-    print("\nAI:\n" + response_string + "\n\nHuman:")
-
-    #줄바꿈이 있으면 곤란하니까 삭제를 시도해 볼 겁니다.
-    response_string.replace('\n', '\\n')
-    dialogue = dialogue + response_string + restart_sequence
+    print("\nAI:" + response_string + "\n\nHuman:")
 
     #들고 온 거 TTS로 만들기
     tts = gtts.gTTS(text=response_string, lang='en')
@@ -65,12 +55,10 @@ while True:
     playsound.playsound(fileRandom_TTS,True)
     os.remove(fileRandom_TTS)
 
+    #대화 로그에다가 AI가 한 말을 꽃아넣을 거에요.
+    dialogue = dialogue + response_string + "\n"
+
     #대화한 걸 파일에 꽃아 넣기
-    f = open("test.txt", 'w')
-    f.write(basic_rule)
-
-    f.write(ruleCount)
-    f.write(RuleC)
-
+    f = open("Dialogue.txt", 'w')
     f.write(dialogue)
     f.close()

@@ -20,12 +20,12 @@ async def on_message(message):
         return
     
     stringTemp = message.content
-    print("bot returns")
-    await message.channel.send(functionsList.aLine(stringTemp))
+    print("discord bot returns:\n" + stringTemp)
+    await message.channel.send(functionsList.aLine(stringTemp, ""))
     return
 
 @app.command()
 async def bot(ctx):
     await ctx.reply('Hi, there!')
     
-app.run('여기에는 토큰을 넣는 거에요.')
+app.run('토큰은 여기다가 넣으시면 됩니다.')
