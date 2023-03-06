@@ -66,6 +66,18 @@ response = openai.Completion.create(
 이제 파일 입력으로 했던 소리를 다시 파일 안에 집어넣습니다.  
 While문만 돌리면 챗봇은 완성이네요.  
 
+```python
+#response_string이 ChatGPT가 하는 대답이다.
+response_string = response['choices'][0]['text']
+dialogue = dialogue + response_string + "\n"
+
+
+#대화한 걸 파일에 꽃아 넣기
+f = open("Dialogue.txt", 'w')
+f.write(dialogue)
+f.close()
+```
+
 ---
 
 ## < 디스코드 봇 >
@@ -73,6 +85,32 @@ While문만 돌리면 챗봇은 완성이네요.
 어차피 저기 있는 친구를 함수로 만들어서 돌리기만 하면 상관없으니  
 디스코드 봇 뿌리만 가져와서 함수 돌리는 거만 하죠.  
 작동은 잘 하는 거 같네요.  
+
+코드는 ChatGPT의 도움을 많이 받았습니다.
+```python
+DiscordBot.py
+```
+를 참고하시면 되고요,
+
+제가 수정한 부분은 이곳입니다.
+```python
+#GPT in Python에서 만든 함수를 불러온다.(나의 경우에는 function)
+import functionsList
+
+@app.event
+#디스코드에서 이 봇이 볼 수 있는 범위에 누가 메세지를 입력했을 경우
+async def on_message(message):
+    #그것의 출처가 자신인 경우
+    if message.author.bot:
+        #중단
+        return
+    
+    #메세지의 내용을 받아 그걸 앞에서 가져온 함수에 집어넣는다.
+    stringTemp = message.content
+    print("discord bot returns:\n" + stringTemp)
+    await message.channel.send(functionsList.aLine(stringTemp, ""))
+    return
+```
 
 ---
 
@@ -100,7 +138,9 @@ response = s.recv(2048).decode()
 ---
 
 ## < gTTS >
-평범한 gTTS를 이용해서 목소리나 넣어 줍시다.  
+평범한 gTTS를 이용해서 목소리나 넣어 줍시다.
+이상하게 같은 파일에다가 tts를 넣었다 뺐다 하니까 오류가 나는 관계로
+난수를 만들어서 파일 이름을 아예 랜덤으로 만들어 버립시다.
 ```python
 #들고 온 거 TTS로 만들기
 tts = gtts.gTTS(text=response_string, lang='en')
